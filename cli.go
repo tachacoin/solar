@@ -9,18 +9,18 @@ import (
 	"sync"
 
 	"github.com/pkg/errors"
-	"github.com/qtumproject/solar/contract"
-	"github.com/qtumproject/solar/deployer"
-	"github.com/qtumproject/solar/deployer/eth"
-	"github.com/qtumproject/solar/deployer/qtum"
-	"github.com/qtumproject/solar/varstr"
+	"github.com/tachacoin/solar/contract"
+	"github.com/tachacoin/solar/deployer"
+	"github.com/tachacoin/solar/deployer/eth"
+	"github.com/tachacoin/solar/deployer/tachacoin"
+	"github.com/tachacoin/solar/varstr"
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
 	app               = kingpin.New("solar", "Solidity smart contract deployment management.")
-	qtumRPC           = app.Flag("qtum_rpc", "RPC provider url").Envar("QTUM_RPC").String()
-	qtumSenderAddress = app.Flag("qtum_sender", "(qtum) Sender UTXO Address").Envar("QTUM_SENDER").String()
+	tachacoinRPC           = app.Flag("tachacoin_rpc", "RPC provider url").Envar("TACHACOIN_RPC").String()
+	tachacoinSenderAddress = app.Flag("tachacoin_sender", "(tachacoin) Sender UTXO Address").Envar("TACHACOIN_SENDER").String()
 
 	// geth --rpc --rpcapi="eth,personal,miner"
 	ethRPC    = app.Flag("eth_rpc", "RPC provider url").Envar("ETH_RPC").String()
@@ -35,7 +35,7 @@ var (
 type RPCPlatform int
 
 const (
-	RPCQtum     = iota
+	RPCTachacoin     = iota
 	RPCEthereum = iota
 )
 
@@ -53,16 +53,16 @@ type solarCLI struct {
 var solar = &solarCLI{}
 
 var (
-	errorUnspecifiedRPC = errors.New("Please specify RPC url by setting QTUM_RPC or ETH_RPC or using flag --qtum_rpc or --eth_rpc")
+	errorUnspecifiedRPC = errors.New("Please specify RPC url by setting TACHACOIN_RPC or ETH_RPC or using flag --tachacoin_rpc or --eth_rpc")
 )
 
 func (c *solarCLI) RPCPlatform() RPCPlatform {
-	if *qtumRPC == "" && *ethRPC == "" {
+	if *tachacoinRPC == "" && *ethRPC == "" {
 		log.Fatalln(errorUnspecifiedRPC)
 	}
 
-	if *qtumRPC != "" {
-		return RPCQtum
+	if *tachacoinRPC != "" {
+		return RPCTachacoin
 	}
 
 	return RPCEthereum
@@ -121,10 +121,10 @@ func (c *solarCLI) ContractsRepository() *contract.ContractsRepository {
 	return c.repo
 }
 
-func (c *solarCLI) QtumRPC() *qtum.RPC {
-	rpc, err := qtum.NewRPC(*qtumRPC)
+func (c *solarCLI) TachacoinRPC() *tachacoin.RPC {
+	rpc, err := tachacoin.NewRPC(*tachacoinRPC)
 	if err != nil {
-		fmt.Println("Invalid QTUM RPC URL:", *qtumRPC)
+		fmt.Println("Invalid TACHACOIN RPC URL:", *tachacoinRPC)
 		os.Exit(1)
 	}
 
@@ -157,13 +157,13 @@ func (c *solarCLI) Deployer() (deployer deployer.Deployer) {
 	var err error
 	var rpcURL *url.URL
 
-	if rawurl := *qtumRPC; rawurl != "" {
+	if rawurl := *tachacoinRPC; rawurl != "" {
 
 		rpcURL, err = url.ParseRequestURI(rawurl)
 		if err != nil {
 			log.Fatalf("Invalid RPC url: %#v", rawurl)
 		}
-		deployer, err = qtum.NewDeployer(rpcURL, c.ContractsRepository(), *qtumSenderAddress)
+		deployer, err = tachacoin.NewDeployer(rpcURL, c.ContractsRepository(), *tachacoinSenderAddress)
 	}
 
 	if rawurl := *ethRPC; rawurl != "" {

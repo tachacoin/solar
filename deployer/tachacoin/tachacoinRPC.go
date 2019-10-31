@@ -1,4 +1,4 @@
-package qtum
+package tachacoin
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/qtumproject/solar/contract"
+	"github.com/tachacoin/solar/contract"
 )
 
 type jsonRPCRequest struct {
@@ -100,7 +100,7 @@ func (rpc *RPC) Call(result interface{}, method string, params ...interface{}) (
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return errors.Errorf("QTUM RPC %s", res.Status)
+		return errors.Errorf("TACHACOIN RPC %s", res.Status)
 	}
 
 	dec := json.NewDecoder(res.Body)

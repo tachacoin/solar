@@ -1,6 +1,6 @@
 pragma solidity ^0.5.1;
 
-contract QtumTest {
+contract TachacoinTest {
    uint storedNumber;
    constructor() public {
        storedNumber = 1;

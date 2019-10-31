@@ -9,11 +9,11 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/qtumproject/solar/deployer"
+	"github.com/tachacoin/solar/deployer"
 
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/pkg/errors"
-	"github.com/qtumproject/solar/contract"
+	"github.com/tachacoin/solar/contract"
 )
 
 type Deployer struct {

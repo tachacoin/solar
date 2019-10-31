@@ -1,8 +1,8 @@
 pragma solidity ^0.4.0;
 
-contract QtumTest {
+contract TachacoinTest {
    uint storedNumber;
-   function QtumTest() {
+   function TachacoinTest() {
        storedNumber=1;
    }
    function setNumber(uint number) public {
